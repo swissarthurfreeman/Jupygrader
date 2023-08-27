@@ -32,6 +32,9 @@ RUN chown grader-course101:grader-course101 /home/grader-course101/formgrader_wo
 RUN jupyter lab workspaces import /home/grader-course101/formgrader_workspace.json
 
 USER grader-course101
+RUN jupyter labextension disable --level=user nbgrader:formgrader
+RUN jupyter labextension enable --level=user nbgrader:formgrader
+RUN jupyter server extension enable --user nbgrader.server_extensions.formgrader
 WORKDIR /home/grader-course101/
 RUN nbgrader quickstart course101
 

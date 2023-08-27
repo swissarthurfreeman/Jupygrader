@@ -48,7 +48,7 @@ c.JupyterHub.services = [               # Start the notebook server as a service
         ],
         'environment': {
             # specify formgrader as default landing page
-            'JUPYTERHUB_DEFAULT_URL': '/formgrader'
+            #'JUPYTERHUB_DEFAULT_URL': '/formgrader'
         },
         'user': 'grader-course101',
         'cwd': '/home/grader-course101/',
