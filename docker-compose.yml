@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  jupyterhub:
+    image: "jupyterhub-grader:latest"
+    container_name: jupyterhub
+    networks:
+      - jupyterhub-network
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "exchange_volume:/usr/local/share/nbgrader/exchange"
+    ports:
+      - "8000:8000"
+    environment:
+      DOCKER_NETWORK_NAME: jupyterhub-network
+      HUB_IP: jupyterhub # name of the hub
+
+networks:
+  jupyterhub-network:
+    name: jupyterhub-network
+
+volumes:
+  exchange_volume:  # for some fucking reason, compose appends the directory name main_ every time
