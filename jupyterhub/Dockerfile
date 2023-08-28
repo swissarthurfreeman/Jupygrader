@@ -31,12 +31,33 @@ COPY formgrader_workspace.json /home/grader-course101/formgrader_workspace.json
 RUN chown grader-course101:grader-course101 /home/grader-course101/formgrader_workspace.json
 RUN jupyter lab workspaces import /home/grader-course101/formgrader_workspace.json
 
+# create course
 USER grader-course101
 RUN jupyter labextension disable --level=user nbgrader:formgrader
 RUN jupyter labextension enable --level=user nbgrader:formgrader
 RUN jupyter server extension enable --user nbgrader.server_extensions.formgrader
 WORKDIR /home/grader-course101/
 RUN nbgrader quickstart course101
+
+USER root
+# install scala kernel for grader
+RUN apt-get -y update && \     
+    apt-get install --no-install-recommends -y curl openjdk-8-jre-headless ca-certificates-java && \
+    apt-get clean && \     
+    rm -rf /var/lib/apt/lists/*
+
+RUN curl -Lo /usr/local/bin/coursier https://github.com/coursier/coursier/releases/download/v2.0.0-RC3-2/coursier && \
+    chmod +x /usr/local/bin/coursier
+
+RUN /usr/local/bin/coursier --help
+
+COPY install-kernels.sh . 
+RUN chmod +x install-kernels.sh
+
+USER grader-course101
+RUN ALMOND_VERSION=0.14.0-RC12 SCALA_VERSIONS=2.12.18 ./install-kernels.sh && \
+    rm install-kernels.sh && \ 
+    rm -rf .ivy2
 
 # root runs jupyterhub here
 USER root
