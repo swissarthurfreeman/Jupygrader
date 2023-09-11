@@ -5,7 +5,7 @@ FROM almondsh/almond:0.14.0-RC12-scala-2.12.18
 
 COPY nbgrader_config.py /etc/jupyter/nbgrader_config.py
 COPY jupyter_server_config.py /etc/jupyter/jupyter_server_config.py
-RUN pip install nbgrader
+RUN pip install nbgrader==0.8.4
 
 # disable non student extensions
 RUN jupyter labextension disable --level=sys_prefix nbgrader:formgrader

@@ -8,7 +8,7 @@ ARG EXCHANGE_ROOT="/usr/local/share/nbgrader/exchange"
 RUN setup_directory ${EXCHANGE_ROOT} ugo+rwx
 
 # config directory is /srv/jupyterhub
-RUN pip install nbgrader
+RUN pip install nbgrader==0.8.4
 RUN pip install dockerspawner
 
 RUN make_user student1

@@ -1,5 +1,8 @@
 c = get_config()
 
+# note, by default nbgrader is using /usr/local/share/nbgrader/exchange/course101/outbound|inbound
+# as a exchange directory. This appears to work automatically, hopefully it won't break in the future...
+
 c.CourseDirectory.course_id = "course101"
 c.CourseDirectory.root = '/home/grader-course101/course101'
 
