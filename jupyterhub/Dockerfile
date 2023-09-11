@@ -11,10 +11,6 @@ RUN setup_directory ${EXCHANGE_ROOT} ugo+rwx
 RUN pip install nbgrader
 RUN pip install dockerspawner
 
-# nbgrader looks for config in /etc/jupyter
-RUN setup_directory /etc/jupyter ugo+r
-COPY global_nbgrader_config.py /etc/jupyter/
-
 RUN make_user student1
 RUN make_user instructor1
 RUN make_user grader-course101
@@ -23,7 +19,7 @@ RUN make_user grader-course101
 # the grader account runs the starter nbgrader commands 
 # and his home directory contains the course files.
 RUN cd /home/grader-course101 && mkdir .jupyter
-COPY local_nbgrader_config.py /home/grader-course101/.jupyter/nbgrader_config.py
+COPY nbgrader_config.py /home/grader-course101/nbgrader_config.py
 RUN chown -R grader-course101:grader-course101 /home/grader-course101/
 
 # Setup grading account jupyterlab instance
@@ -37,7 +33,7 @@ RUN jupyter labextension disable --level=user nbgrader:formgrader
 RUN jupyter labextension enable --level=user nbgrader:formgrader
 RUN jupyter server extension enable --user nbgrader.server_extensions.formgrader
 WORKDIR /home/grader-course101/
-RUN nbgrader quickstart course101
+RUN mkdir course101
 
 USER root
 # install scala kernel for grader

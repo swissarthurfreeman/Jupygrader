@@ -1,5 +1,6 @@
 c = get_config()
 
+c.CourseDirectory.course_id = "course101"
 c.CourseDirectory.root = '/home/grader-course101/course101'
 
 c.ClearSolutions.begin_solution_delimeter = "BEGIN SOLUTION"
