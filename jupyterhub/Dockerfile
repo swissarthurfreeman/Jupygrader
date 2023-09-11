@@ -17,8 +17,7 @@ RUN make_user grader-course101
 
 # configure local nbgrader config file
 # the grader account runs the starter nbgrader commands 
-# and his home directory contains the course files.
-RUN cd /home/grader-course101 && mkdir .jupyter
+# and his home directory contains the course files and the nbgrader config
 COPY nbgrader_config.py /home/grader-course101/nbgrader_config.py
 RUN chown -R grader-course101:grader-course101 /home/grader-course101/
 
