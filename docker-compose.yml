@@ -9,6 +9,7 @@ services:
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
       - "exchange_volume:/usr/local/share/nbgrader/exchange"
+      - "course_files_volume:/home/grader-course101"
     ports:
       - "8000:8000"
     environment:
@@ -20,4 +21,5 @@ networks:
     name: jupyterhub-network
 
 volumes:
+  course_files_volume:  # persistence for the grader home directory, dockerspawner doesn't spawn it's server !
   exchange_volume:  # for some fucking reason, compose appends the directory name main_ every time

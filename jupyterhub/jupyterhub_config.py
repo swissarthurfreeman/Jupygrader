@@ -12,7 +12,8 @@ c.DockerSpawner.use_internal_ip = True
 c.DockerSpawner.network_name = os.environ["DOCKER_NETWORK_NAME"]
 
 c.DockerSpawner.volumes = {
-    'main_exchange_volume': '/usr/local/share/nbgrader/exchange'
+    'jupyterhub-user-{username}': '/home/jovyan',                   # persist all home directories (grader account, students, instructors...)
+    'main_exchange_volume': '/usr/local/share/nbgrader/exchange'    # volume that contains the exchange
 }
 
 # instructor1 and instructor2 have access to a shared server.
