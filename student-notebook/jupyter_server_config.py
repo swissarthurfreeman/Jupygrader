@@ -8,7 +8,7 @@ c = get_config()
 c.ServerApp.ip = '0.0.0.0'
 c.ServerApp.port = 8888   # same as is exposed in almond.sh
 c.ServerApp.open_browser = False
-c.ServerApp.terminals_enabled = False
+c.ServerApp.terminals_enabled = False   # do not allow server to let users access terminal
 
 # shutdown kernels after no activity for 15 minutes
 c.MappingKernelManager.cull_idle_timeout = 15 * 60

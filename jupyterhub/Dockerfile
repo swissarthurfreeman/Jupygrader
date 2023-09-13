@@ -45,9 +45,10 @@ COPY instructor.jupyterlab-workspace /home/grader-course101/instructor.jupyterla
 RUN jupyter lab workspaces import /home/grader-course101/instructor.jupyterlab-workspace
 
 
-# create course
+# create course with default test assignement
 WORKDIR /home/grader-course101/
-RUN mkdir course101
+RUN mkdir -p course101/source/psTest
+COPY problem1.ipynb /home/grader-course101/course101/source/psTest/problem1.ipynb
 
 USER root
 # install scala kernel for grader
