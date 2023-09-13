@@ -21,15 +21,31 @@ RUN make_user grader-course101
 COPY nbgrader_config.py /home/grader-course101/nbgrader_config.py
 RUN chown -R grader-course101:grader-course101 /home/grader-course101/
 
+# enable instructor jupylab extensions
+RUN jupyter labextension disable nbgrader:formgrader
+RUN jupyter labextension enable nbgrader:formgrader
+RUN jupyter server extension enable nbgrader.server_extensions.formgrader
+
+# remove bloat
+RUN jupyter labextension disable @jupyterlab/application-extension:property-inspector
+RUN jupyter labextension disable @jupyterlab/apputils-extension:notification
+RUN jupyter labextension disable @jupyterlab/statusbar-extension:plugin
+RUN jupyter labextension disable @jupyterlab/extensionmanager-extension:plugin
+
+# disable table of contents bloat
+RUN jupyter labextension disable @jupyterlab/notebook-extension:toc
+RUN jupyter labextension disable @jupyterlab/toc
+
+# disable running sessions manager
+RUN jupyter labextension disable @jupyterlab/running-extension:plugin
+
 # Setup grading account jupyterlab instance
 USER grader-course101
 COPY instructor.jupyterlab-workspace /home/grader-course101/instructor.jupyterlab-workspace
 RUN jupyter lab workspaces import /home/grader-course101/instructor.jupyterlab-workspace
 
+
 # create course
-RUN jupyter labextension disable --level=user nbgrader:formgrader
-RUN jupyter labextension enable --level=user nbgrader:formgrader
-RUN jupyter server extension enable --user nbgrader.server_extensions.formgrader
 WORKDIR /home/grader-course101/
 RUN mkdir course101
 
