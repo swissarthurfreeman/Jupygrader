@@ -23,11 +23,8 @@ RUN chown -R grader-course101:grader-course101 /home/grader-course101/
 
 # Setup grading account jupyterlab instance
 USER grader-course101
-# RUN chown grader-course101:grader-course101 /home/grader-course101/instructor_workspace.json
 COPY instructor.jupyterlab-workspace /home/grader-course101/instructor.jupyterlab-workspace
 RUN jupyter lab workspaces import /home/grader-course101/instructor.jupyterlab-workspace
-
-# RUN chown -R grader-course101:grader-course101 /home/grader-course101/.jupyter
 
 # create course
 RUN jupyter labextension disable --level=user nbgrader:formgrader

@@ -10,6 +10,7 @@ c.DockerSpawner.image = 'student:latest'
 
 c.DockerSpawner.use_internal_ip = True
 c.DockerSpawner.network_name = os.environ["DOCKER_NETWORK_NAME"]
+c.DockerSpawner.default_url = "/lab/workspaces/student"             # start at student workspace
 
 c.DockerSpawner.volumes = {
     'jupyterhub-user-{username}': '/home/jovyan',                   # persist all home directories (grader account, students, instructors...)
