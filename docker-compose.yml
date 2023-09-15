@@ -11,15 +11,29 @@ services:
       - "exchange_volume:/usr/local/share/nbgrader/exchange"
       - "course_files_volume:/home/grader-course101"
     ports:
-      - "8000:8000"
+      - "8000:8000"      # jupyterhub base image exposes port 8000
     environment:
       DOCKER_NETWORK_NAME: jupyterhub-network
       HUB_IP: jupyterhub # name of the hub
+    labels:
+      - traefik.http.routers.jupyhubcont.rule=Host(`localhost`)
+
+  reverse-proxy:
+    image: traefik:v2.10
+    command: --configFile=./traefik/traefik.yml # --api.insecure=true --providers.docker mutually exclusive to file
+    networks:
+      - jupyterhub-network    # TODO : isolate to network shared by jupyhub and traefik only, instead of guest containers too
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "./traefik/traefik.yml:/etc/traefik/traefik.yml"
 
 networks:
   jupyterhub-network:
     name: jupyterhub-network
 
 volumes:
-  course_files_volume:  # persistence for the grader home directory, dockerspawner doesn't spawn it's server !
+  course_files_volume:  # persistence for the grader home directory, dockerspawner doesn't spawn the grader server !
   exchange_volume:  # for some fucking reason, compose appends the directory name main_ every time
