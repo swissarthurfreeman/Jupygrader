@@ -1,13 +1,31 @@
+# https://doc.traefik.io/traefik/user-guides/docker-compose/acme-tls/
 log:
   level: DEBUG
 
 api:
-  insecure: true
+  # insecure: true  # since we want a secure api service accessible via https
   dashboard: true
 
+# traefik will only listen to incoming requests on port 443
 entryPoints:
-  web:
-    address: ":80"
+  websecure:
+    address: ":443" 
+
+# configure let's encrypt https challenge
+# our services must then be told to use this certificate resolver
+certificatesResolvers:
+  myresolver:
+    acme:
+      tlsChallenge: {}
+      email: arthur.freeman@unige.ch
+      # tell traefik where to store the certificate
+      # this path is mounted from the host, acme.json
+      # is persistent
+      storage: /letsencrypt/acme.json
+      
 
 providers:
-  docker: {}
+  docker:
+    # when false, requires adding traekik.enabled=true
+    # label to containers we want traefik to see
+    exposedbydefault: false

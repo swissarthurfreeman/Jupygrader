@@ -1,6 +1,38 @@
 version: '3'
 
 services:
+  reverse-proxy:
+    image: traefik:v2.10
+    networks:
+      - jupyterhub-network    # TODO : isolate to network shared by jupyhub and traefik only, instead of guest containers too
+    ports:
+      - "80:80"
+      - "8080:8080"
+      - "443:443"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./traefik/traefik.yml:/etc/traefik/traefik.yml"  # static config
+      - "./traefik/acme.json:/letsencrypt/acme.json"      # to reuse previously issued letsencrypt certificates
+    # configure access to traefik dashboard
+    labels: 
+      # Dashboard config
+      - "traefik.enable=true"
+      # see https://doc.traefik.io/traefik/master/routing/routers/#path-pathprefix-and-pathregexp
+      - "traefik.http.routers.dashboard.rule=Host(`test.jupyter.unige.ch`) && PathPrefix(`/dahsboard`)"
+      - "traefik.http.routers.dashboard.entrypoints=websecure"
+      - "traefik.http.routers.dashboard.tls.certresolver=myresolver"
+      # see https://doc.traefik.io/traefik/master/routing/providers/docker/#service-definition
+      # a traefik service is automatically created and assigned to the router
+
+      # add basic authentification to access traefik dashboard
+      # see https://traefik.io/blog/traefik-2-0-docker-101-fc2893944b9d/
+      # see https://github.com/traefik-tech-blog/traefik-docker101/blob/main/docker-compose-08.yml?ref=traefik.io
+      - "traefik.http.routers.dashboard.service=api@internal"
+      - "traefik.http.routers.dashboard.middlewares=auth-dashboard"   # define a new middleware
+      # tell traefik it's basic authentification middleware see https://doc.traefik.io/traefik/v2.0/middlewares/basicauth/?ref=traefik.io
+      # simply run echo $(htpasswd -nb admin gorwell1984) | sed -e s/\\$/\\$\\$/g
+      - "traefik.http.middlewares.auth-dashboard.basicauth.users=admin:$$apr1$$GVsRlau4$$igQmg65r894lgrjOq2/bK." 
+
   jupyterhub:
     image: "jupyterhub-grader:latest"
     container_name: jupyterhub
@@ -16,19 +48,12 @@ services:
       DOCKER_NETWORK_NAME: jupyterhub-network
       HUB_IP: jupyterhub # name of the hub
     labels:
-      - traefik.http.routers.jupyhubcont.rule=Host(`localhost`)
-
-  reverse-proxy:
-    image: traefik:v2.10
-    command: --configFile=./traefik/traefik.yml # --api.insecure=true --providers.docker mutually exclusive to file
-    networks:
-      - jupyterhub-network    # TODO : isolate to network shared by jupyhub and traefik only, instead of guest containers too
-    ports:
-      - "80:80"
-      - "8080:8080"
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock"
-      - "./traefik/traefik.yml:/etc/traefik/traefik.yml"
+      - "traefik.enable=true"
+      # see https://doc.traefik.io/traefik/master/routing/routers/#priority
+      # longest path has priority, so test.jupyter.unige.ch/dashboard will direct to hub
+      - "traefik.http.routers.jupyhub.rule=Host(`test.jupyter.unige.ch`)"
+      - "traefik.http.routers.jupyhub.entrypoints=websecure"
+      - "traefik.http.routers.jupyhub.tls.certresolver=myresolver"
 
 networks:
   jupyterhub-network:
