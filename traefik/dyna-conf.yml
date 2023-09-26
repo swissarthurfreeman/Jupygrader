@@ -1,0 +1,19 @@
+enable: true
+
+http:
+  routers:
+    dashboard:
+      rule: Host(`test.jupyter.unige.ch`) && (PathPrefix(`/api/`) || PathPrefix(`/dashboard/`))
+      service: api@internal
+      middlewares:
+      - auth-dashboard
+  middlewares:
+    auth-dashboard:
+      basicAuth:
+        users: # $ do not need to be escaped, unlike in docker-compose.yml...!
+        - admin:$apr1$M0jt0XNl$BoCdlqts40pyQS5D9eyvg1 
+
+tls:
+  certificates:
+    - certFile: /config/fullchain.pem
+      keyFile: /config/privkey.pem

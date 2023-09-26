@@ -16,3 +16,5 @@ providers:
     # when false, requires adding traekik.enabled=true
     # label to containers we want traefik to see
     exposedbydefault: false
+  file:
+    directory: /config/
