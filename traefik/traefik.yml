@@ -9,7 +9,7 @@ api:
 # traefik will only listen to incoming requests on port 443
 entryPoints:
   web:
-    address: ":80" 
+    address: ":80"
 
 providers:
   docker:

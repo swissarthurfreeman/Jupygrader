@@ -2,7 +2,7 @@ version: '3'
 
 services:
   reverse-proxy:
-    image: traefik:v2.6
+    image: traefik:v2.10
     networks:
       - jupyterhub-network    # TODO : isolate to network shared by jupyhub and traefik only, instead of guest containers too
     ports:
@@ -14,10 +14,11 @@ services:
       - "./traefik/traefik.yml:/etc/traefik/traefik.yml"  # static config
     labels: 
       - "traefik.enable=true"
-      - "traefik.http.services.traefik-service.loadbalancer.server.port=8080"
-      - "traefik.http.routers.dashboard.rule=Host(`test.jupyter.unige.ch`) && PathPrefix(`/dashboard`)"
-      - "traefik.http.routers.dashboard.entrypoints=web"
+      - "traefik.http.routers.dashboard.rule=Host(`test.jupyter.unige.ch`) && (PathPrefix(`/api/`) || PathPrefix(`/dashboard/`))"
       - "traefik.http.routers.dashboard.service=api@internal"
+      
+      #- "traefik.http.routers.dashboard.entrypoints=web"
+      
       - "traefik.http.routers.dashboard.middlewares=auth-dashboard" 
       - "traefik.http.middlewares.auth-dashboard.basicauth.users=admin:$$apr1$$GVsRlau4$$igQmg65r894lgrjOq2/bK." 
 
@@ -39,7 +40,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.jupyhub.rule=Host(`test.jupyter.unige.ch`)"
       - "traefik.http.routers.jupyhub.entrypoints=web"
-      - "traefik.http.services.jupyservice.loadbalancer.server.port=8000"
+      - "traefik.http.services.jupyhub-service.loadbalancer.server.port=8000"
 
       
 networks:
