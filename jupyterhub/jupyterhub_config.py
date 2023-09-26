@@ -13,9 +13,9 @@ c.DockerSpawner.network_name = os.environ["DOCKER_NETWORK_NAME"]
 c.DockerSpawner.default_url = "/lab/workspaces/student"             # start at student workspace
 
 c.DockerSpawner.volumes = {
-    'jupyterhub-user-{username}': '/home/jovyan',                   # persist all home directories (grader account, students, instructors...)
-    'main_exchange_volume': '/usr/local/share/nbgrader/exchange'    # volume that contains the exchange
-}
+    'jupyterhub-user-{username}': '/home/jovyan',                              # persist all home directories (grader account, students, instructors...)
+    'jupyhubgrascala_exchange_volume': '/usr/local/share/nbgrader/exchange'    # volume that contains the exchange
+}   # TODO : replace jupyhubgrascal / main by a prefix that isn't the parent folder fuck's sake
 
 # instructor1 and instructor2 have access to a shared server.
 # This group *must* start with formgrade- for nbgrader to work correctly.
