@@ -7,6 +7,9 @@ http:
       service: api@internal
       middlewares:
       - auth-dashboard
+      tls: {}
+      entrypoints:
+      - websecure
   middlewares:
     auth-dashboard:
       basicAuth:
@@ -17,3 +20,11 @@ tls:
   certificates:
     - certFile: /config/fullchain.pem
       keyFile: /config/privkey.pem
+      stores:
+        - default
+  stores:
+    default:
+      defaultCertificate:
+        certFile: /config/fullchain.pem
+        keyFile: /config/privkey.pem
+      
