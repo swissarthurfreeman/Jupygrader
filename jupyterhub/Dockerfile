@@ -10,6 +10,7 @@ RUN setup_directory ${EXCHANGE_ROOT} ugo+rwx
 # config directory is /srv/jupyterhub
 RUN pip install nbgrader==0.8.4
 RUN pip install dockerspawner
+RUN pip install jupyterhub-ltiauthenticator
 
 RUN make_user student1
 RUN make_user instructor1
